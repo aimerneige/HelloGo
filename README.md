@@ -10,5 +10,6 @@ Some code and Notes when I learn golang.
 
 ## Thanks
 
+- https://code.visualstudio.com/
 - https://biezhi.me/
 - https://www.jianshu.com/p/bb16ea7afdda
