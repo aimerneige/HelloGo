@@ -19,7 +19,7 @@
 
 ```bash
 export GOROOT="/usr/local/go"
-export GOPATH="$HOME/Code/golang/"
+export GOPATH="$HOME/Code/golang"
 export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 ```
 
@@ -60,6 +60,14 @@ src/
             todo.go
 ```
 
+你必须在工作区目录下新建三个文件夹：
+
+1. bin
+2. pkg
+3. src
+
+这三个文件夹分别用来存储编译好的可执行文件、包和源代码文件。
+
 ### 编辑器配置
 
 #### vscode
@@ -99,7 +107,56 @@ git config --global https.proxy 'socks5://127.0.0.1:8123'
 
 这个 IDE 开箱即用，没什么好说的。
 
+> 本项目完全使用 vscode 开发。
+
 ## 第一个程序
 
+首先为程序创建一个目录，你需将它放在你的 _工作区目录_ 下，比如这个项目我放在了 `$GOPATH/src/aimerneige.com/HelloGo/` 下，之后就可以开始写代码了。
 
+首先惯例当然是要在终端打印一个 `Hello World!`.
 
+我们创建一个 `hello.go` 的文件来写入下面的代码：
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello World!")
+}
+```
+
+你并不需要写 `import "fmt"` 这一行，你也不需要特别在意代码的格式化，当你保存文件之后，go 会帮你自动导包和格式化。
+
+当代码是 main 包并且有一个 main 函数的时候，它可以被编译为可执行文件。之后我们可以通过下面的指令直接运行它：
+
+```bash
+go run hello.go
+```
+
+如果你想要编译它，执行下面的指令：
+
+```bash
+go build hello.go
+```
+
+在当前目录下你会得到一个与当前系统相关的可执行文件，你可以直接执行它，也会得到终端输出。
+
+如果你想要吧这个可执行文件安装到系统，在包含可执行文件的目录下执行下面的指令：
+
+```
+go install
+```
+
+执行完这个指令后，你会发现在任何路径下执行 `hello` 都可以得到输出。
+
+我们可以使用下面的命令查看可执行文件被存储在哪了：
+
+```bash
+which hello
+```
+
+我们会发现这个文件被保存在了 _工作区_ 下的 `bin` 文件夹中，而这个文件夹已经被加入到了环境变量中，所以我们可以直接执行它。
+
+如果不需要了，可以直接删除它。
