@@ -39,4 +39,5 @@
 ### Other ignore file ###
 
 # Ingore all binaries file
-Hello/hello
+hello/hello
+pkghello/hello

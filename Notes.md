@@ -129,7 +129,7 @@ func main() {
 
 你并不需要写 `import "fmt"` 这一行，你也不需要特别在意代码的格式化，当你保存文件之后，go 会帮你自动导包和格式化。
 
-当代码是 main 包并且有一个 main 函数的时候，它可以被编译为可执行文件。之后我们可以通过下面的指令直接运行它：
+当代码是 main 包并且有一个 main 函数的时候，它可以被编译为可执行文件。之后我们可以在源代码存储的路径下通过下面的指令直接运行它：
 
 ```bash
 go run hello.go
@@ -143,7 +143,7 @@ go build hello.go
 
 在当前目录下你会得到一个与当前系统相关的可执行文件，你可以直接执行它，也会得到终端输出。
 
-如果你想要吧这个可执行文件安装到系统，在包含可执行文件的目录下执行下面的指令：
+构建完成后，如果你想要吧这个可执行文件安装到系统，在源文件的目录下执行下面的指令：
 
 ```
 go install
@@ -157,6 +157,97 @@ go install
 which hello
 ```
 
-我们会发现这个文件被保存在了 _工作区_ 下的 `bin` 文件夹中，而这个文件夹已经被加入到了环境变量中，所以我们可以直接执行它。
+我们会发现这个文件被保存在了 _工作区_ 下的 `bin` 文件夹中，而这个文件夹已经在之前配置环境中被加入到了环境变量中，所以我们可以直接执行它。
 
 如果不需要了，可以直接删除它。
+
+## 第一个库
+
+首先创建一个新的目录用来保存我们的库文件。本项目中我新建了一个名为 `stringutil` 的文件夹，在下面创建新的文件 `reverse.go`，写入如下内容：
+
+```go
+package stringutil
+
+// Reverse 将其实参字符串以符文为单位左右反转。
+func Reverse(s string) string {
+	r := []rune(s)
+	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return string(r)
+}
+```
+
+我们会发现函数前有一行注释，如果不写的话，vscode 会弹出一个警告，要求你写注释，而且必须以函数名开头。之后加上解释。
+
+写好之后，我们可以通过下面的指令来测试该包的编译：
+
+```bash
+go build aimerneige.com/HelloGo/stringutil
+```
+
+如果当前目录就是源码所在目录，可以直接通过下面的指令编译：
+
+```bash
+go build
+```
+
+由于没有主函数，编译并不会产生任何结果，如果你没有看到输出，证明它没有问题并可以通过编译。如果想要输出文件，可以通过在源代码所在目录下执行下面的指令在工作区的 pkg 目录中生成包的对象：
+
+```bash
+go install
+```
+
+以本项目为例，在 `$GOPATH/pkg/darwin_amd64/aimerneige.com/HelloGo/` 目录下可以看到编译后的库文件 `stringutil.a`。
+
+之后，我们可以在其他项目中直接导入这个库。
+
+新建一个 `pkghello` 的文件夹，复制之前写的第一个程序中的代码，并修改，得到下面的代码：
+
+```bash
+package main
+
+import (
+	"fmt"
+
+	"aimerneige.com/HelloGo/stringutil"
+)
+
+func main() {
+	fmt.Println("Hello World!")
+	fmt.Println(stringutil.Reverse("Hello World!"))
+}
+```
+
+如果我们要导入多个包的时候，我们需要使用括号。之后就可以使用刚才写的 Reverse 函数了。
+
+直接运行后构建后执行这个文件，我们可以得到一个正序的 `Hello World!` 和一个反序的 `!dlroW olleH`。
+
+当我们在构建成功后通过 `go install` 安装新的 `hello` 程序时，go 工具会安装它所依赖的任何东西，之后再执行 `hello`，我们依然可以得到相同的结果。
+
+当我们通过下面的指令安装的时候，`stringutil` 包也会被自动安装。
+
+```
+go install aimerneige.com/HelloGo/pkghello
+```
+
+如果你和我使用同样的环境，当成功的完成安装之后，工作空间应该是这样的：
+
+```bash
+bin/
+    pkghello # 可执行文件
+pkg/
+    darwin_amd64/ # 这里会反映出你的操作系统和架构
+        aimerneige.com/
+            HelloGo/
+                stringutil.a # 包对象
+src/
+    aimerneige.com/
+        HelloGo/
+            stringutil/
+                reverse.go # 包源码
+            pkghello/
+                hello.go # 命令源码
+```
+
+Go 的可执行命令是静态链接的；在运行Go程序时，包对象无需存在。
