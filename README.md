@@ -2,7 +2,7 @@
 
 ## About
 
-Some code and Notes when I learn go.
+Some code and Notes when I learn golang.
 
 ## Requirement
 
