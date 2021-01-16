@@ -35,3 +35,8 @@
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/go,visualstudiocode
+
+### Other ignore file ###
+
+# Ingore all binaries file
+Hello/helo
