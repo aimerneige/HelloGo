@@ -13,6 +13,6 @@ Some code and Notes when I learn golang.
 
 ## Thanks / 感谢
 
-- https://code.visualstudio.com/
 - https://biezhi.me/
 - https://www.jianshu.com/p/bb16ea7afdda
+- https://code.visualstudio.com/
