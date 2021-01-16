@@ -1,14 +1,17 @@
 # Hello Go
 
-## About
+## About / 关于
 
 Some code and Notes when I learn golang.
 
-## Requirement
+一些在学习 golang 时的代码和笔记。
 
+## Requirement / 需求
+
+- proxy server
 - golang
 
-## Thanks
+## Thanks / 感谢
 
 - https://code.visualstudio.com/
 - https://biezhi.me/
