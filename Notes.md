@@ -251,3 +251,140 @@ src/
 ```
 
 Go 的可执行命令是静态链接的；在运行Go程序时，包对象无需存在。
+
+## Go 的包管理
+
+Go 中的包实际上就是计算机中的目录，或是叫文件夹，通过它们进行目录结构和文件的组织。Go 只是将文件目录称为了包而已。Go 语言中，包名和文件所在的目录名是一致的。
+
+### 包的命名
+
+#### Go 语言的包命名
+
+规范：
+
+1. 简洁
+2. 小写
+3. 和 Go 文件所在目录同名
+
+这样的命名规范有助于我们引用，书写以及快速定位查找。
+
+```go
+package main
+
+import "net/http"
+
+func main() {
+	http.ListenAndServe("127.0.0.1:8080", handler)
+}
+```
+
+#### 以域名命名包
+
+如果你有自己的域名，你可以使用自己的域名命名包：
+
+```go
+package main
+
+import "aimerneige.com/utils"
+```
+
+#### 使用 GitHub 账号命名包
+
+如果你没有自己的域名，你也可以使用 GitHub 账号的方式命名：
+
+```go
+package main
+
+import "github.com/aimerneige/utils"
+```
+
+由于笔者有自己的域名 `aimerneige.com` ，在本项目中我使用 `以域名命名包` 的方式。
+
+### main 包
+
+当把一个 go 文件的包声明为 `main` 时，就等于告诉 go 编译程序，我这个是一个可执行的程序，那么 go 编译程序会尝试把它编译为一个二进制的可执行文件。
+
+一个 `main` 的包，一定要包含一个 `main()` 函数。它是程序的入口，没有这个函数，程序无法执行。
+
+> 在 go 语言里，同时要满足 `main` 包和包含 `main()` 函数，才会被编译为一个可执行文件。
+
+### 导入包
+
+```go
+import "fmt"
+
+import (
+    "fmt"
+    "net/http"
+)
+```
+
+编译器首先会优先在 `$GOROOT` 下查找，其次是 `$GOPATH`，一旦找到，会立即停止搜索，如果最终都没有找到，就会报编译异常。
+
+### 远程包导入
+
+```go
+import "github.com/biezhi/moe"
+```
+
+1. 在 `$GOPATH` 下搜索
+2. `go get` 下载
+3. 保存在 `$GOPATH/src` 下以便于之后使用
+
+### 命名导入
+
+如果不同的包之间重名了，我们可以通过下面的方式对包进行重命名：
+
+```go
+package main
+
+import (
+    "fmt"
+    myfmt "mylib/fmt"
+)
+
+func main() {
+    fmt.Println()
+    myfmt.Println()
+}
+```
+
+有时候，如果有一个包没有用到，但是却要导入它，就可以通过重命名为下滑线都形式来导入：
+
+```go
+package main
+import (
+    _ "mylib/fmt"
+)
+```
+
+### 包的 init 函数
+
+#### init 函数
+
+每个包可以有任意多的 `init` 函数。
+
+`init` 函数会在 `main` 函数执行之前执行，通常我们会用 `init` 函数来初始化变量，设置包，读取一些配置等。
+
+```go
+package mysql
+
+import (
+    "database/sql"
+)
+
+func init() {
+    sql.Register("mysql", &MySQLDriver{})
+}
+```
+
+如果我们只想执行一个包的 init 方法，并不想使用这个包，我们可以在导入这个包的时候，使用 `_` 重命名包，避免编译错误。
+
+#### 静默导入
+
+```go
+import "database/mysql"
+import _ "github.com/go-sql-driver/mysql"
+
+db, err != sql.Open("mysql", "user:password@/dbname")
+```
