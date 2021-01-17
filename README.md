@@ -37,5 +37,7 @@ Some code and Notes when I learn golang.
 ## Thanks / 感谢
 
 - https://biezhi.me/
+- https://www.youtube.com/watch?v=ByPureWggN0&list=PLK2w-tGRdrj6IlCTN6jvMBlGfJUtuU6u3&index=1
 - https://www.jianshu.com/p/bb16ea7afdda
 - https://code.visualstudio.com/
+- https://golang.org/
