@@ -388,3 +388,334 @@ import _ "github.com/go-sql-driver/mysql"
 
 db, err != sql.Open("mysql", "user:password@/dbname")
 ```
+
+## Go 命令
+
+在终端输入 go 并回车，你会得到下面的输出
+
+```bash
+➜  ~ go
+Go is a tool for managing Go source code.
+
+Usage:
+
+	go <command> [arguments]
+
+The commands are:
+
+	bug         start a bug report
+	build       compile packages and dependencies
+	clean       remove object files and cached files
+	doc         show documentation for package or symbol
+	env         print Go environment information
+	fix         update packages to use new APIs
+	fmt         gofmt (reformat) package sources
+	generate    generate Go files by processing source
+	get         add dependencies to current module and install them
+	install     compile and install packages and dependencies
+	list        list packages or modules
+	mod         module maintenance
+	run         compile and run Go program
+	test        test packages
+	tool        run specified go tool
+	version     print Go version
+	vet         report likely mistakes in packages
+
+Use "go help <command>" for more information about a command.
+
+Additional help topics:
+
+	buildconstraint build constraints
+	buildmode       build modes
+	c               calling between Go and C
+	cache           build and test caching
+	environment     environment variables
+	filetype        file types
+	go.mod          the go.mod file
+	gopath          GOPATH environment variable
+	gopath-get      legacy GOPATH go get
+	goproxy         module proxy protocol
+	importpath      import path syntax
+	modules         modules, module versions, and more
+	module-get      module-aware go get
+	module-auth     module authentication using go.sum
+	module-private  module configuration for non-public modules
+	packages        package lists and patterns
+	testflag        testing flags
+	testfunc        testing functions
+
+Use "go help <topic>" for more information about that topic.
+```
+
+### go build
+
+```bash
+usage: go build [-o output] [-i] [build flags] [packages]
+```
+
+```bash
+go build
+go build .
+go build hello.go
+```
+
+编译指定包
+
+```bash
+go build aimerneige.com/HelloGo/stringutil
+```
+
+编译所有包
+
+```bash
+go build aimerneige.com/HelloGo/stringutil/...
+```
+
+查看环境信息
+
+```bash
+➜  ~ go env
+GO111MODULE=""
+GOARCH="amd64"
+GOBIN=""
+GOCACHE="/Users/aimerneige/Library/Caches/go-build"
+GOENV="/Users/aimerneige/Library/Application Support/go/env"
+GOEXE=""
+GOFLAGS=""
+GOHOSTARCH="amd64"
+GOHOSTOS="darwin"
+GOINSECURE=""
+GOMODCACHE="/Users/aimerneige/Code/golang/pkg/mod"
+GONOPROXY=""
+GONOSUMDB=""
+GOOS="darwin"
+GOPATH="/Users/aimerneige/Code/golang"
+GOPRIVATE=""
+GOPROXY="https://proxy.golang.org,direct"
+GOROOT="/usr/local/go"
+GOSUMDB="sum.golang.org"
+GOTMPDIR=""
+GOTOOLDIR="/usr/local/go/pkg/tool/darwin_amd64"
+GCCGO="gccgo"
+AR="ar"
+CC="clang"
+CXX="clang++"
+CGO_ENABLED="1"
+GOMOD=""
+CGO_CFLAGS="-g -O2"
+CGO_CPPFLAGS=""
+CGO_CXXFLAGS="-g -O2"
+CGO_FFLAGS="-g -O2"
+CGO_LDFLAGS="-g -O2"
+PKG_CONFIG="pkg-config"
+GOGCCFLAGS="-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/63/vqnp4j053z91rlqrms0lpfph0000gn/T/go-build667255972=/tmp/go-build -gno-record-gcc-switches -fno-common"
+```
+
+`GOOS` 是目标操作系统，它的值为：
+
+- darwin
+- freebsd
+- linux
+- windows
+- android
+- dragonfly
+- netbsd
+- openbsd
+- plan9
+- solaris
+
+`GOARCH` 是目标处理器的架构，目前支持的有：
+
+- arm
+- arm64
+- 386
+- amd64
+- ppc64
+- ppc64le
+- mips64
+- mips64le
+- s390x
+
+跨平台编译 / 跨平台编译
+
+```bash
+GOOS=linux GOARCH=amd64 go build aimerneige.com/HelloGo/hello
+```
+
+> 更多内容 https://golang.org/doc/install/source#enviroment
+> 
+> 也可以在终端执行如下指令查看帮助信息
+> 
+> ```bash
+> go help build
+> ```
+
+### go clean
+
+用于清除可执行文件等编译结果
+
+```bash
+usage: go clean [clean flags] [build flags] [packages]
+```
+
+```bash
+go help clean
+```
+
+### go run
+
+我们想要运行一个源文件时，首先要 `build`，接下来需要执行可执行文件，而 `go run` 是吧这俩步合成了一步，直接得到结果。
+
+```bash
+usage: go run [build flags] [-exec xprog] package [arguments...]
+
+Run compiles and runs the named main Go package.
+Typically the package is specified as a list of .go source files from a single directory,
+but it may also be an import path, file system path, or pattern
+matching a single known package, as in 'go run .' or 'go run my/cmd'.
+
+By default, 'go run' runs the compiled binary directly: 'a.out arguments...'.
+If the -exec flag is given, 'go run' invokes the binary using xprog:
+	'xprog a.out arguments...'.
+If the -exec flag is not given, GOOS or GOARCH is different from the system
+default, and a program named go_$GOOS_$GOARCH_exec can be found
+on the current search path, 'go run' invokes the binary using that program,
+for example 'go_js_wasm_exec a.out arguments...'. This allows execution of
+cross-compiled programs when a simulator or other execution method is
+available.
+
+The exit status of Run is not the exit status of the compiled binary.
+
+For more about build flags, see 'go help build'.
+For more about specifying packages, see 'go help packages'.
+
+See also: go build.
+```
+
+接收参数
+
+假设我们有这样的一个文件 `hello.go`
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	fmt.Println("Input Args:", os.Args[1]);
+}
+```
+
+我们使用下面的指令来执行它，并给它传递一个参数：
+
+```bash
+go run hello.go HelloWorld
+```
+
+之后我们会在终端得到 `Input Args: HelloWorld`。
+
+### go install
+
+安装编译结果。
+
+```bash
+➜  ~ go help install
+usage: go install [-i] [build flags] [packages]
+
+Install compiles and installs the packages named by the import paths.
+
+Executables are installed in the directory named by the GOBIN environment
+variable, which defaults to $GOPATH/bin or $HOME/go/bin if the GOPATH
+environment variable is not set. Executables in $GOROOT
+are installed in $GOROOT/bin or $GOTOOLDIR instead of $GOBIN.
+
+When module-aware mode is disabled, other packages are installed in the
+directory $GOPATH/pkg/$GOOS_$GOARCH. When module-aware mode is enabled,
+other packages are built and cached but not installed.
+
+The -i flag installs the dependencies of the named packages as well.
+
+For more about the build flags, see 'go help build'.
+For more about specifying packages, see 'go help packages'.
+
+See also: go build, go get, go clean.
+```
+
+### go get
+
+下载 Go 依赖库
+
+```bash
+go get github.com/biezhi/moe
+```
+
+更新依赖
+
+```bash
+go get -u github.com/biezhi/moe
+```
+
+查看进度
+
+```bash
+go get -v github.com/biezhi/moe
+```
+
+> 更多内容请在终端执行 `go help get`
+
+### go fmt
+
+可以格式化源代码中的排版。在 `vscode` 下，保存代码后会自动对代码执行格式化。
+
+如果你想要查看它的作用，可以使用其他编辑器（比如没有经过配置的`vim`）调整排版，然后使用 `go fmt` 来格式化代码。
+
+你可以像这样来格式化代码：
+
+```bash
+go fmt hello.go
+```
+
+`go fmt` 可以为我们统一代码风格，所有的代码都是统一的，这可以便于团队协作，所以我们在将代码提交到 `GitHub` 前一定要进行格式化。幸运的是，vscode 自动帮我们做了这件事。
+
+### go vet
+
+用于检查代码中的错误。
+
+1. `Println` 这类的函数调用时，类型匹配了错误的参数。
+2. 定义常用的方法时，方法签名错误。
+3. 错误的结构体标签。
+4. 没有指定字段名的结构字面量。
+
+```bash
+usage: go vet [-n] [-x] [-vettool prog] [build flags] [vet flags] [packages]
+```
+
+### go test
+
+这个命令用于运行 Go 的单元测试，它也是接受一个包名作为参数，如果没有指定，使用当前目录。
+
+go test 运行的单元测试必须符合 go 的测试要求。
+
+1. 写有单元测试的文件名，必须以 `_test.go` 结尾。
+2. 测试文件要求包含若干个测试函数。
+3. 这些测试函数要以 Test 为前缀，还要接受一个 *testing.T 类型的参数。
+
+```go
+package main
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+	if Add(1, 2) == 3 {
+		t.Log("1 + 2 = 3")
+	}
+	if Add(1, 1) == 3 {
+		t.Error("1 + 1 = 3")
+	}
+}
+```
+
+> 更多内容请在终端执行 `go help test`
